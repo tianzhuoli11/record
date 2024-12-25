@@ -1,6 +1,13 @@
 # intership record
 # Started at Nov 26 2024
 
+### 阶段任务
+    学习mybuddy项目代码
+    帮助张老师解决提取图像背景问题
+    眼部提取
+    生成空白视频帧
+    去测试环境是否能跑程序
+
 # Nov 26 - Nov 28
     了解数字人项目大致流程技术栈
 
@@ -201,14 +208,72 @@
     ##工作内容总结：在训练时解决了bug，通过另外一种方式安装了安装包，完成训练，写下了标准操作上传到项目组gitlab
 
 
+# Dec 13
+    拍摄数字人测试视频
+    开始学习数字人源码，做笔记
+
+# Dec 16
+    对run文件学习，着重看了voiceassistant，ernerf的部分代码
+    帮助汪双老师在新机器上build images
+    学习extract_background相关代码
+    问题： 在哪一步进行的extract_background，test_step在哪里
+    Trainer和NeRFGUI哪一个
+
+# Dec 17 
+    明白extrac_background函数具体逻辑，使用knn去计算前景距离，抠出人像保留背景
+    给汪老师搭配环境
+    学习U-2-net去提取图像
+    汪老师那边的hubert处理遇到问题，需要把facebook这个文件夹提到ernerf主文件夹目录下，就是data_utils外层
+    给别人文件的时候，要给英伟达维护过的！！！源码不一样
+    发现新的提取图像代码，SAM，学习
+
+# Dec 18
+    应用SAM,目前完成安装，但是应用还需要再做实践，结合代码和图片
+    docker run --gpus all -d -it --name sam_test2 ernerf-env18:latest
+
+    pip install git+https://github.com/facebookresearch/segment-anything.git
+
+    git clone git@github.com:facebookresearch/segment-anything.git
+    cd segment-anything; pip install -e .
+
+    pip install opencv-python pycocotools matplotlib onnxruntime onnx
+
+    download checkpoints file1 at windows
+    docker cp /mnt/c/Users/tianz/Downloads/sam_vit_h_4b8939.pth sam_test2:app/segment-anything/segment_anything/util
+    
+    生成空白帧视频10s，目的是在数字人不说话期间完成视频的嵌入，参考英伟达文档
 
 
+    帮张老师做300*300视频训练，把包发给他
 
+    做背景替换，把视频的背景给变成一张图片，用rpbgimage.py文件，成功！！！
 
+# Dec 19
+    验收成果，发现脚部的图片没有替换
+    继续看my_buddy源码
+    继续看生成空白视频帧的代码
+    从汪老师电脑解压了，超大压缩包，拷贝过来
 
+# Dec 20
+    提取背景的效果一般，还需要完善
+    眨眼帧的提取，需要安装dlib的.dat文件，任务完成
+    看SAM处理的效果
+    
+    
+# Dec 23
+    ##之前用简单手动的程序替换的脚本去运行时候，检测蓝色老是检测不到，主要的原因是opencv.imread导入的图片是BGR格式，需要给他变成RGB。
+    张老师：下一阶段是测试环境的适配性，很多pip list里面的包没办法使用了，过程很漫长，具体的细节是：
+    1. 把总安装包安装到汪老师电脑上
+    2. 进行.bat文件运行（基于.tar.gz环境包）
+    3. 查看日志报错
+    4. 在容器里面，测试不同版本的包
+    5. 打包环境，发给汪老师，重复2-5
 
-
-
+# Dec 24
+    拷贝张老师的环境和文件放到汪老师电脑上问题解决
+    但是会报错ffmpeg
+    本机运行时，会报错内存不足
+    张老师说的主要任务意思是，现在有的这个运行程序包是已经生成好的，如果再添加新功能新的包，这个已经打好的包就不能用了需要重新打包。需要做的事情就是对照英伟达给的官方文档搭建这个环境，排除报错或者版本冲突的问题，打包成一个环境之后能够跑通目前的程序，或者是否能够把打包好的这个包返回到开发功能的状态，比如去安装
 
 ,
     "http://hub-mirror.c.163.com",
@@ -216,6 +281,21 @@
     "https://cr.console.aliyun.com",
     "https://mirror.ccs.tencentyun.com",
     "https://docker.mirrors.tuna.tsinghua.edu.cn"
+
+# Dec 25
+    tar zcvf mybuddy_app_v1.0.tar.gz --exclude mybuddy_app_v1.0.tar.gz --exclude models --exclude tllm_debug --exclude dist --exclude .git *
+    tar zcvf models.tar.gz models
+    conda pack -n my_buddy_env_py310 -o my_buddy_env_py310.tar.gz
+    昨天张老师的这个问题被刘老师解决了，可以直接在这个环境里面的pip.exe去安装，直接就能解决这个问题，不需要再重新搭环境
+    pip好之后按照流程可以生成新的打包程序
+
+
+
+
+
+
+
+
 
 
 PS C:\Users\tianz\Desktop\Internship\Avatar\ER-NeRF-main\ER-NeRF-main> docker build -f Dockerfile0 -t ernerf-env200 .
@@ -309,8 +389,5 @@ pytz, python_speech_features, pyaudio, tzdata, trimesh, tqdm, tifffile, threadpo
  => => # fsspec, fonttools, einops, decorator, dearpygui, cycler, contourpy, configargparse, audioread, tensorboardX, scikit-learn, python-dateutil, PyMCubes, poo
  => => # ch, numba, markdown-it-py, lazy-loader, huggingface-hub, cffi, torch-ema, tokenizers, soundfile, scikit-image, rich, resampy, pandas, matplotlib, transfo
  => => # rmers, lpips, librosa, face_alignment  
-
-
-
 
 
